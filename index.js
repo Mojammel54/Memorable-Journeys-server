@@ -40,6 +40,17 @@ async function run() {
 
 
         })
+        app.get('/seemoreservices', async (req, res) => {
+
+            const query = {}
+            const cursor = tourCollection.find(query)
+            const result = await cursor.toArray();
+            res.send(result)
+
+
+
+
+        })
 
     }
 

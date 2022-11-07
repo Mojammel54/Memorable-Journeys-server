@@ -28,6 +28,19 @@ async function run() {
 
         const tourCollection = client.db("memorable-journeys").collection("services");
 
+
+        app.get('/limitservices', async (req, res) => {
+
+            const query = {}
+            const cursor = tourCollection.find(query).limit(3)
+            const result = await cursor.toArray();
+            res.send(result)
+
+
+
+
+        })
+
     }
 
 

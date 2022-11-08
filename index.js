@@ -93,7 +93,22 @@ async function run() {
 
         app.get('/review', async (req, res) => {
 
-            const query = {}
+         
+            let query = {}
+
+            if (req.query.serviceId) {
+
+                query = {
+
+
+                    serviceId: req.query.serviceId
+
+
+
+                }
+            }
+
+
             const cursor = reviewCollection.find(query)
             const review = await cursor.sort({ date: -1 }).toArray();
             res.send(review)
@@ -163,7 +178,7 @@ async function run() {
         })
 
 
-        
+
         app.put('/update/:id', async (req, res) => {
 
             const id = req.params.id
@@ -178,7 +193,7 @@ async function run() {
                 $set: {
 
                     review: review.review,
-                
+
 
 
 

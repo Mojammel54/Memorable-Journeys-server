@@ -27,6 +27,7 @@ async function run() {
     try {
 
         const tourCollection = client.db("memorable-journeys").collection("services");
+        const reviewCollection = client.db("review").collection("reviews");
 
 
         app.get('/limitservices', async (req, res) => {
@@ -78,6 +79,21 @@ async function run() {
 
 
         })
+        app.post('/review', async (req, res) => {
+
+
+            const order = req.body
+            const result = await reviewCollection.insertOne(order)
+            res.send(result)
+
+
+
+
+        })
+
+
+
+
 
     }
 

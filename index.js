@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const express = require('express');
 const cors = require('cors');
@@ -45,6 +45,33 @@ async function run() {
             const query = {}
             const cursor = tourCollection.find(query)
             const result = await cursor.toArray();
+            res.send(result)
+
+
+
+
+        })
+
+
+        app.get('/services/:id', async (req, res) => {
+
+
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const data = await tourCollection.findOne(query)
+            res.send(data)
+
+
+
+
+        })
+
+
+        app.post('/seemoreservices', async (req, res) => {
+
+
+            const order = req.body
+            const result = await tourCollection.insertOne(order)
             res.send(result)
 
 

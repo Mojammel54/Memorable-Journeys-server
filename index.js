@@ -108,7 +108,7 @@ async function run() {
 
 
             let query = {}
-            console.log(req.query.email)
+
             if (req.query.email) {
 
                 query = {
@@ -123,8 +123,75 @@ async function run() {
 
             }
             const cursor = reviewCollection.find(query)
-            const reviews = await cursor.toArray();
+            const reviews = await cursor.sort({ date: -1 }).toArray();
             res.send(reviews)
+
+
+
+        })
+
+
+        app.delete('/reviews/:id', async (req, res) => {
+
+
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const result = await reviewCollection.deleteOne(query)
+            res.send(result)
+
+
+
+        })
+
+
+        app.get('/update/:id', async (req, res) => {
+
+            const id = req.params.id
+            console.log(id)
+            const query = { _id: ObjectId(id) }
+            const review = await reviewCollection.findOne(query)
+            res.send(review)
+
+
+
+
+
+
+
+
+
+        })
+
+
+        
+        app.put('/update/:id', async (req, res) => {
+
+            const id = req.params.id
+            console.log(id)
+            const filter = { _id: ObjectId(id) }
+            const review = req.body;
+            const option = { upsert: true }
+
+            const updateInfo = {
+
+
+                $set: {
+
+                    review: review.review,
+                
+
+
+
+                }
+
+
+
+
+            }
+            const result = await reviewCollection.updateOne(filter, updateInfo, option)
+            res.send(result)
+
+
 
 
 

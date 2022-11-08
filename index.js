@@ -104,6 +104,38 @@ async function run() {
         })
 
 
+        app.get('/reviewbyemail', async (req, res) => {
+
+
+            let query = {}
+            console.log(req.query.email)
+            if (req.query.email) {
+
+                query = {
+
+
+                    email: req.query.email
+
+
+                }
+
+
+
+            }
+            const cursor = reviewCollection.find(query)
+            const reviews = await cursor.toArray();
+            res.send(reviews)
+
+
+
+        })
+
+
+
+
+
+
+
 
 
 

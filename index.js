@@ -2,6 +2,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 const app = express()
 const port = process.env.PORT || 5000;
@@ -21,6 +22,42 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 
 
+function verifyJWT(req, res, next) {
+
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+
+        return res.status(401).send({ message: 'unauthorized access' })
+
+
+    }
+
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, docoded) {
+
+
+        if (err) {
+
+            return res.status(403).send({ message: 'Forbidden' })
+
+
+        }
+
+        req.decoded = docoded;
+        next()
+
+
+
+    })
+
+
+
+
+
+}
+
+
 
 async function run() {
 
@@ -28,6 +65,19 @@ async function run() {
 
         const tourCollection = client.db("memorable-journeys").collection("services");
         const reviewCollection = client.db("review").collection("reviews");
+
+
+
+        app.post('/jwt', (req, res) => {
+
+            const user = req.body;
+            console.log(user)
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '6h' })
+            res.send({ token })
+
+
+
+        })
 
 
         app.get('/limitservices', async (req, res) => {
@@ -93,7 +143,7 @@ async function run() {
 
         app.get('/review', async (req, res) => {
 
-         
+
             let query = {}
 
             if (req.query.serviceId) {
@@ -119,8 +169,17 @@ async function run() {
         })
 
 
-        app.get('/reviewbyemail', async (req, res) => {
+        app.get('/reviewbyemail', verifyJWT, async (req, res) => {
 
+
+            console.log(req.headers.authorization)
+            const decoded = req.decoded;
+          
+            if (decoded.email !== req.query.email) {
+
+                res.status(403).send({ mesage: 'unauthorized access' })
+
+            }
 
             let query = {}
 

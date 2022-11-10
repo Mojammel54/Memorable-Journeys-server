@@ -20,7 +20,7 @@ app.use(express.json())
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ebaxxgs.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-
+// .............................................jwt token function............................................................
 
 function verifyJWT(req, res, next) {
 
@@ -71,7 +71,7 @@ async function run() {
         app.post('/jwt', (req, res) => {
 
             const user = req.body;
-            console.log(user)
+           
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '6h' })
             res.send({ token })
 
@@ -79,6 +79,7 @@ async function run() {
 
         })
 
+        ////..........................................limit 3 service homeoage ..........................................
 
         app.get('/limitservices', async (req, res) => {
 
@@ -129,6 +130,9 @@ async function run() {
 
 
         })
+
+//...............................................................review post...................................
+
         app.post('/review', async (req, res) => {
 
 
@@ -172,7 +176,7 @@ async function run() {
         app.get('/reviewbyemail', verifyJWT, async (req, res) => {
 
 
-            console.log(req.headers.authorization)
+       
             const decoded = req.decoded;
           
             if (decoded.email !== req.query.email) {
@@ -221,7 +225,7 @@ async function run() {
         app.get('/update/:id', async (req, res) => {
 
             const id = req.params.id
-            console.log(id)
+          
             const query = { _id: ObjectId(id) }
             const review = await reviewCollection.findOne(query)
             res.send(review)
@@ -241,7 +245,7 @@ async function run() {
         app.put('/update/:id', async (req, res) => {
 
             const id = req.params.id
-            console.log(id)
+         
             const filter = { _id: ObjectId(id) }
             const review = req.body;
             const option = { upsert: true }
